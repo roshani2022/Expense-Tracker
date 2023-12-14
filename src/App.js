@@ -5,6 +5,7 @@ import Login from "./Component/Login/Login";
 import Welcome from "./Component/Pages/Welcome";
 import Root from "./Component/Layout/Root";
 import Home from "./Component/Pages/Home";
+import ProfilePage from "./Component/Pages/ProfilePage";
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
         </Route>
         <Route path='/Welcome'>
           <Welcome/>
+        </Route>
+        <Route path='/ProfilePage'>
+          <ProfilePage/>
         </Route>
        </Switch>
       </Root>
