@@ -65,7 +65,8 @@ const Login = () => {
         } else {
           console.log("Signup successful!");
         }
-        loginCtx.login(data.idToken);
+         loginCtx.login(data.idToken);
+       
         history.replace("/Welcome");
       })
       .catch((err) => {

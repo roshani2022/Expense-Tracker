@@ -1,4 +1,4 @@
-import React,{useContext, useRef} from "react";
+import React,{useContext, useEffect, useRef} from "react";
 import { Button, Col, Row, Container,Form } from "react-bootstrap";
 import LoginContext from "../Store/LoginContex";
 import {FaGithub,FaGlobe} from "react-icons/fa"
@@ -9,13 +9,43 @@ const ProfilePage = () => {
   const photoRef = useRef("")
  const loginCtx = useContext(LoginContext)
 
+ let url = 'https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyD-KuNBIcej1kXNRbQ4NAShkU3iwVjeguA'
+
+ useEffect(()=>{
+  const getData = async()=> {
+    try{
+      const res = await fetch(url,{
+        method:"POST",
+        body: JSON.stringify({
+          idToken:loginCtx.token
+        }),
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      
+      const data = await res.json();
+      console.log(data)
+      console.log(data.displayName)
+      nameRef.current.value=data.displayName;
+      photoRef.current.value=data.photoUrl
+    }catch(err){
+     console.log(err)
+  }
+  
+ 
+  }
+  getData()
+},[loginCtx.token])
+
   const profileSubmitHandler = async(event) => {
     event.preventDefault();
 
     const enteredName = nameRef.current.value;
     const enteredURL = photoRef.current.value;
 
-    let url = 'https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyD-KuNBIcej1kXNRbQ4NAShkU3iwVjeguA'
+    
     try{
       const response = await fetch(url,{
         method:"POST",
@@ -31,12 +61,17 @@ const ProfilePage = () => {
        })
 
        const data = await response.json();
+       
+       
       console.log(data);
     } catch (err) {
       console.log(err.message);
     }
    
+   
   }
+
+ 
 
   return (
     <>
@@ -103,3 +138,4 @@ const ProfilePage = () => {
   );
 };
 export default ProfilePage;
+
