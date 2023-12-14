@@ -1,4 +1,6 @@
 import React, { useState } from "react"
+
+
 const LoginContext = React.createContext({
     token:"",
     isLoggedIn:false,
@@ -7,6 +9,8 @@ const LoginContext = React.createContext({
 })
 
  export const LoginContextProvider = (props) => {
+
+  
    const initialToken = localStorage.getItem('token')
   const [token, setToken] = useState(initialToken);
 
@@ -19,6 +23,8 @@ const LoginContext = React.createContext({
 
    const logoutHandler = (token) => {
     setToken(null)
+    localStorage.removeItem('token');
+   
    }
 
    const contextValue ={

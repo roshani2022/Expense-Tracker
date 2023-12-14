@@ -35,8 +35,7 @@ const Header = () => {
           >
             HOME
           </NavLink>
-
-          <NavLink
+          {!isLoggedIn && <NavLink
             to="/Login"
             style={{
               textDecoration: "none",
@@ -45,7 +44,8 @@ const Header = () => {
             }}
           >
             LOGIN
-          </NavLink>
+          </NavLink>}
+          
 
           <NavLink
             to="/Welcome"
@@ -58,8 +58,9 @@ const Header = () => {
             WELCOME
           </NavLink>
 
-          {isLoggedIn && (
-            
+          {isLoggedIn && 
+            <NavLink
+              to="/Login" >
               <Button
                 variant="link"
                 onClick={() => loginCtx.logout()}
@@ -67,8 +68,8 @@ const Header = () => {
               >
                 LOGOUT
               </Button>
-           
-          )}
+              </NavLink>
+            }
         </Nav>
       </Navbar>
     </>
