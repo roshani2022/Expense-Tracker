@@ -6,6 +6,7 @@ import Welcome from "./Component/Pages/Welcome";
 import Root from "./Component/Layout/Root";
 import Home from "./Component/Pages/Home";
 import ProfilePage from "./Component/Pages/ProfilePage";
+import ForgotPassWord from "./Component/Pages/ForgotPassWord";
 
 function App() {
   return (
@@ -23,6 +24,9 @@ function App() {
         </Route>
         <Route path='/ProfilePage'>
           <ProfilePage/>
+        </Route>
+        <Route path='/ForgotPassWord'>
+         <ForgotPassWord/>
         </Route>
        </Switch>
       </Root>

@@ -1,7 +1,8 @@
 import React, { useContext, useRef, useState } from "react";
 import { Form, Card, Button, Container } from "react-bootstrap";
 import LoginContext from "../Store/LoginContex";
-import { useHistory } from "react-router-dom";
+import { useHistory,Link } from "react-router-dom";
+
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,6 +17,8 @@ const Login = () => {
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
   };
+
+  
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -125,13 +128,13 @@ const Login = () => {
               {isLogin ? "Login" : "SignUp"}
             </Button>
 
-            {isLogin ? (
+            {isLogin && 
+              <Link to= '/ForgotPassWord' >
               <Button variant="link" className="mb-2">
                 Forgot Password
               </Button>
-            ) : (
-              ""
-            )}
+              </Link>
+            }
           </div>
         </Form>
       </Card>
