@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Row, Button, Col } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
+import { useHistory,Link } from "react-router-dom";
 import LoginContext from "../Store/LoginContex";
 
 const Welcome = () => {
@@ -68,7 +68,8 @@ let url = 'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AI
         <div className="d-flex justify-content-end me-3">
         <Button onClick={emailVerificationHandler}>Verify Email</Button>
         </div>
-        
+        <h1>Dayily Expense<Link to='/Expense' style={{textDecoration:'none'}}> List 
+          </Link></h1>
       </div>
     </>
   );
