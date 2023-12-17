@@ -1,21 +1,43 @@
-import React from "react";
-import { Card } from "react-bootstrap";
+import React, { useContext } from "react";
+import { Button, Card } from "react-bootstrap";
+import { FaDeleteLeft, FaPenToSquare } from "react-icons/fa6";
+import ExpenseContext from "../Store/ExpenseContext";
 
-const ExpenseList = (props) => {
+const ExpenseList = () => {
+  const expenseContext = useContext(ExpenseContext);
+
+  const showExpense = (expenses) => {
+
+    return expenses.map((expense,index) => (
+      <li
+        key={index}
+        style={{
+          textDecoration: "none",
+          borderBottom: "1px solid #ddd",
+          padding: "10px 0",
+          fontWeight: "bold",
+        }}
+      >
+        {expense.amount} - {expense.detail} - {expense.category} -{"    "}
+        <Button onClick={() =>expenseContext.deleteExpense(expense.id)}>
+          <FaDeleteLeft style={{ fontSize: "1.5rem", color: "white" }} />
+        </Button>
+        {" "}<Button >
+         <FaPenToSquare style={{ fontSize: "1.5rem" }} />
+          </Button> 
+      </li>
+    ));
+  };
+
   return (
     <>
-      {props.expenses.length > 0 ? (
-        <Card className="mt-3 mx-auto" style={{ width: "400px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
-          <div style={{ listStyleType: "none", padding: "0" ,fontWeight:"bold"}}>
-            {props.expenses.map((expense) => (
-              <div key={expense.id} style={{ textDecoration: "none", borderBottom: "1px solid #ddd", padding: "10px 0" }}>
-                {expense.amount} - {expense.detail} - {expense.category}
-              </div>
-            ))}
-          </div>
+      {expenseContext.expenses.length > 0 && (
+        <Card
+          className="mt-3 mx-auto"
+          style={{ width: "400px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}
+        >
+          <ul>{showExpense(expenseContext.expenses)}</ul>
         </Card>
-      ) : (
-       ""
       )}
     </>
   );

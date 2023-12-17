@@ -1,15 +1,12 @@
-import React, {useState } from "react";
+import React, { useState, useContext } from "react";
 import { Card, Form, Button } from "react-bootstrap";
+import ExpenseContext from "../Store/ExpenseContext";
 
-const ExpenseForm = (props) => {
+const ExpenseForm = () => {
+  const expenseContext = useContext(ExpenseContext);
   const [amount, setAmount] = useState("");
   const [detail, setDetail] = useState("");
   const [category, setCategory] = useState("Food");
-
-  
-
-  let url =
-    "https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses.json";
 
   const amountHandler = (event) => {
     setAmount(event.target.value);
@@ -21,36 +18,23 @@ const ExpenseForm = (props) => {
     setCategory(event.target.value);
   };
 
-  
-
-  const addExpenseHandler = async (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
 
-    let expenses = { amount, detail, category };
+    let expenses = {
+     
+      amount,
+      detail,
+      category,
+    };
 
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify(expenses),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        console.log(data);
+    expenseContext.addExpense(expenses);
 
-        setAmount("");
-        setDetail("");
-        setCategory("Food");
-      } else {
-        console.log(res.error);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    console.log(expenses);
 
-    props.onAdd(amount, detail, category);
+    setAmount("");
+    setDetail("");
+    setCategory("Food");
   };
 
   return (
@@ -62,7 +46,7 @@ const ExpenseForm = (props) => {
         fontWeight: "bold",
       }}
     >
-      <Form onSubmit={addExpenseHandler}>
+      <Form onSubmit={submitHandler}>
         <Form.Group className="mb-3" controlId="formGroupNumber">
           <Form.Label>Expense Amount</Form.Label>
           <Form.Control
