@@ -6,8 +6,14 @@ import ExpenseContext from "../Store/ExpenseContext";
 const ExpenseList = () => {
   const expenseContext = useContext(ExpenseContext);
 
-  const showExpense = (expenses) => {
+  const handleEditButtonClick = (id) => {
+    expenseContext.editExpense(id);
+    console.log(id)
+  };
 
+
+  const showExpense = (expenses) => {
+    console.log(expenses)
     return expenses.map((expense,index) => (
       <li
         key={index}
@@ -22,7 +28,7 @@ const ExpenseList = () => {
         <Button onClick={() =>expenseContext.deleteExpense(expense.id)}>
           <FaDeleteLeft style={{ fontSize: "1.5rem", color: "white" }} />
         </Button>
-        {" "}<Button >
+        {" "}<Button onClick={()=>handleEditButtonClick(expense.id)}>
          <FaPenToSquare style={{ fontSize: "1.5rem" }} />
           </Button> 
       </li>

@@ -1,12 +1,23 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext,useEffect } from "react";
 import { Card, Form, Button } from "react-bootstrap";
 import ExpenseContext from "../Store/ExpenseContext";
 
 const ExpenseForm = () => {
   const expenseContext = useContext(ExpenseContext);
-  const [amount, setAmount] = useState("");
-  const [detail, setDetail] = useState("");
-  const [category, setCategory] = useState("Food");
+
+  const editedExpense = expenseContext.editedExpense;
+
+  const [amount, setAmount] = useState(editedExpense ? editedExpense.amount : "");
+  const [detail, setDetail] = useState(editedExpense ? editedExpense.detail : "");
+  const [category, setCategory] = useState(editedExpense ? editedExpense.category : "Food");
+
+  useEffect(() => {
+    setAmount(editedExpense ? editedExpense.amount : "");
+    setDetail(editedExpense ? editedExpense.detail : "");
+    setCategory(editedExpense ? editedExpense.category : "Food");
+  }, [editedExpense]);
+
+  
 
   const amountHandler = (event) => {
     setAmount(event.target.value);
@@ -21,16 +32,26 @@ const ExpenseForm = () => {
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    let expenses = {
-     
-      amount,
-      detail,
-      category,
-    };
+    if (editedExpense) {
+      // Handle update logic here
+      const updatedExpense = {
+        ...editedExpense,
+        amount: amount,
+        detail: detail,
+        category: category,
+      };
 
-    expenseContext.addExpense(expenses);
+      expenseContext.updateExpense(updatedExpense);
+    } else {
+      let expenses = {
+      
+        amount,
+        detail,
+        category,
+      };
 
-    console.log(expenses);
+      expenseContext.addExpense(expenses);
+    }
 
     setAmount("");
     setDetail("");
@@ -53,7 +74,7 @@ const ExpenseForm = () => {
             type="number"
             placeholder="Amount"
             onChange={amountHandler}
-            value={amount}
+            value={amount||""}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formGroupText">
@@ -62,12 +83,12 @@ const ExpenseForm = () => {
             type="text"
             placeholder="ExpenseDetail"
             onChange={detailHandler}
-            value={detail}
+            value={detail||""}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formGridCategory">
           <Form.Label>Expense Category</Form.Label>
-          <Form.Select onChange={categoryHandler} value={category}>
+          <Form.Select onChange={categoryHandler} value={category||"Food"}>
             <option>Food</option>
             <option>Grocery</option>
             <option>Travel</option>

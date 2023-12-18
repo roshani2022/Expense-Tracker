@@ -4,10 +4,14 @@ const ExpenseContext = React.createContext({
   expenses: [],
   addExpense: () => {},
   deleteExpense: () => {},
+  editedExpense:null,
+  editExpense:()=>{},
+  updateExpense:()=>{},
 });
 
 export const ExpenseContextProvider = (props) => {
   const [expenses, setExpenses] = useState([]);
+  const [editedExpense,setEditedExpense] = useState(null)
 
   let url =
     "https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses.json";
@@ -19,8 +23,19 @@ export const ExpenseContextProvider = (props) => {
 
         if (res.ok) {
           const data = await res.json();
+          console.log('get',data)
 
-          setExpenses(data ? Object.values(data) : []);
+        if(data){
+          const expensesData = Object.entries(data).map(([id, expense]) => ({
+            id,
+            ...expense,
+          }));
+
+          setExpenses(expensesData);
+        }
+        else {
+          setExpenses([])
+        }
         } else {
           console.log("Failed to fetch data:", res.status);
         }
@@ -33,6 +48,7 @@ export const ExpenseContextProvider = (props) => {
   }, []);
 
   const addExpenseHandler = async (expense) => {
+
     try {
       const res = await fetch(url, {
         method: "POST",
@@ -53,15 +69,18 @@ export const ExpenseContextProvider = (props) => {
             amount: expense.amount,
             detail: expense.detail,
             category: expense.category,
+            
           },
+          
         ]);
+        console.log('expenses context',expenses)
       } else {
         console.log(res.error);
       }
     } catch (error) {
       console.log(error);
     }
-    console.log(expenses)
+    
   };
 
   const deleteExpenseHandler = async (id) => {
@@ -95,10 +114,47 @@ export const ExpenseContextProvider = (props) => {
     }
   };
 
+  const editExpenseHandler = (id) => {
+    const editedExpense = expenses.find((expense) => expense.id === id);
+    setEditedExpense(editedExpense);
+    console.log(editedExpense)
+  }
+
+  const updateExpenseHandler = async(updatedExpense) => {
+    try {
+      const res = await fetch(`https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses/${updatedExpense.id}.json`, {
+        method: "PUT", // Use PUT method for updating
+        body: JSON.stringify(updatedExpense),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (res.ok) {
+        // Update the state with the new expense data
+        setExpenses((prevExpenses) =>
+          prevExpenses.map((expense) =>
+            expense.id === updatedExpense.id ? updatedExpense : expense
+          )
+        );
+  
+        console.log("Expense updated successfully");
+        alert("Expense updated successfully");
+      } else {
+        throw new Error("Failed to update expense");
+      }
+    } catch (err) {
+      console.log(err);
+      alert("Failed to update expense");
+    }
+  }
   const contextValue = {
     expenses: expenses,
     addExpense: addExpenseHandler,
     deleteExpense: deleteExpenseHandler,
+    editedExpense:editedExpense,
+    editExpense:editExpenseHandler,
+    updateExpense:updateExpenseHandler
   };
 
   return (
@@ -108,4 +164,3 @@ export const ExpenseContextProvider = (props) => {
   );
 };
 export default ExpenseContext;
-
