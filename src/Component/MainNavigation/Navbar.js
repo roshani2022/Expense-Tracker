@@ -1,12 +1,12 @@
-import React, { useContext} from "react";
-import {NavLink} from 'react-router-dom'
-import { Navbar, Button,Nav } from "react-bootstrap";
-import LoginContext from "../Store/LoginContex";
+import React from "react";
+import { NavLink } from "react-router-dom";
+import { Navbar, Button, Nav } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { authActions } from "../../store/auth";
 
 const Header = () => {
-  const loginCtx = useContext(LoginContext);
-
-  const isLoggedIn = loginCtx.isLoggedIn;
+  const dispatch = useDispatch();
+  const login = useSelector((state) => state.auth.isAuthenticated);
 
   return (
     <>
@@ -17,7 +17,7 @@ const Header = () => {
         variant="dark"
         style={{ height: "3rem" }}
       >
-        <Nav 
+        <Nav
           style={{
             fontWeight: "bold",
             fontFamily: "fangsong",
@@ -35,41 +35,47 @@ const Header = () => {
           >
             HOME
           </NavLink>
-          {!isLoggedIn && <NavLink
-            to="/Login"
-            style={{
-              textDecoration: "none",
-              color: "white",
-              marginRight: "1.5rem",
-            }}
-          >
-            LOGIN
-          </NavLink>}
-          
-
-          <NavLink
-            to="/Welcome"
-            style={{
-              textDecoration: "none",
-              color: "white",
-              marginRight: "1.5rem",
-            }}
-          >
-            WELCOME
-          </NavLink>
-
-          {isLoggedIn && 
+          {!login && (
             <NavLink
-              to="/Login" >
+              to="/Login"
+              style={{
+                textDecoration: "none",
+                color: "white",
+                marginRight: "1.5rem",
+              }}
+            >
+              LOGIN
+            </NavLink>
+          )}
+
+          {login && (
+            <NavLink
+              to="/Welcome"
+              style={{
+                textDecoration: "none",
+                color: "white",
+                marginRight: "1.5rem",
+              }}
+            >
+              WELCOME
+            </NavLink>
+          )}
+
+          {login && (
+            <NavLink to="/Login">
               <Button
                 variant="link"
-                onClick={() => loginCtx.logout()}
-                style={{ textDecoration: "none", color:"white",fontWeight: "bold" }}
+                onClick={() => dispatch(authActions.logout())}
+                style={{
+                  textDecoration: "none",
+                  color: "white",
+                  fontWeight: "bold",
+                }}
               >
                 LOGOUT
               </Button>
-              </NavLink>
-            }
+            </NavLink>
+          )}
         </Nav>
       </Navbar>
     </>

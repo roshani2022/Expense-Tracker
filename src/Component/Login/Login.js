@@ -1,24 +1,21 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Form, Card, Button, Container } from "react-bootstrap";
-import LoginContext from "../Store/LoginContex";
-import { useHistory,Link } from "react-router-dom";
-
+import { useHistory, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../../store/auth";
 
 const Login = () => {
-  const [isLogin, setIsLogin] = useState(true);
-
-  const loginCtx = useContext(LoginContext);
+  const dispatch = useDispatch();
+  const login = useSelector((state) => state.auth.isAuthenticated);
   const history = useHistory();
-
+  console.log(login);
   const emailRef = useRef({ current: "" });
   const passwordRef = useRef({ current: "" });
   const confirmPasswordRef = useRef({ current: "" });
 
   const switchAuthModeHandler = () => {
-    setIsLogin((prevState) => !prevState);
+    dispatch(authActions.setLogin());
   };
-
-  
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -29,7 +26,7 @@ const Login = () => {
 
     let url;
 
-    if (isLogin) {
+    if (!login) {
       url =
         "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD-KuNBIcej1kXNRbQ4NAShkU3iwVjeguA";
     } else {
@@ -53,7 +50,6 @@ const Login = () => {
           return res.json();
         } else {
           return res.json().then((data) => {
-            //let errorMessage = "Authentication Failed!";
             let errorMessage;
             if (data && data.error && data.error.message) {
               errorMessage = data.error.message;
@@ -63,13 +59,15 @@ const Login = () => {
         }
       })
       .then((data) => {
-        if (isLogin) {
+        if (!login) {
           console.log("Login successful!");
         } else {
           console.log("Signup successful!");
         }
-         loginCtx.login(data.idToken);
-       
+
+        dispatch(
+          authActions.login({ idToken: data.idToken, email: data.email })
+        );
         history.replace("/Welcome");
       })
       .catch((err) => {
@@ -85,7 +83,7 @@ const Login = () => {
   return (
     <Container className="d-flex flex-column align-items-center mt-5">
       <Card style={{ width: "25rem" }} className="mx-auto  mt-5">
-        <h1 className="text-center mb-4">{isLogin ? "Login" : "Sign Up"}</h1>
+        <h1 className="text-center mb-4">{!login ? "Login" : "Sign Up"}</h1>
         <Form onSubmit={submitHandler}>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label className="text-left">Email address</Form.Label>
@@ -106,7 +104,7 @@ const Login = () => {
               required
             />
           </Form.Group>
-          {!isLogin ? (
+          {login ? (
             <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
               <Form.Label className="text-start">Confirm Password</Form.Label>
               <Form.Control
@@ -125,22 +123,21 @@ const Login = () => {
               type="submit"
               className="mb-2 align-items-center"
             >
-              {isLogin ? "Login" : "SignUp"}
+              {!login ? "Login" : "SignUp"}
             </Button>
 
-            {isLogin && 
-              <Link to= '/ForgotPassWord' >
-              <Button variant="link" className="mb-2">
-                Forgot Password
-              </Button>
+            {!login && (
+              <Link to="/ForgotPassWord">
+                <Button variant="link" className="mb-2">
+                  Forgot Password
+                </Button>
               </Link>
-            }
+            )}
           </div>
         </Form>
       </Card>
       <Button type="button" onClick={switchAuthModeHandler} className="mt-3">
-      {isLogin ? "Have an account?Login" : " Don't Have an account SignUp"}
-        
+        {!login ? "Have an account?Login" : " Don't Have an account SignUp"}
       </Button>
     </Container>
   );
