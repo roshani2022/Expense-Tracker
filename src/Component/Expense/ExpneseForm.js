@@ -93,6 +93,8 @@ const ExpenseForm = () => {
           }
         );
 
+       
+
         if (res.ok) {
           dispatch(expenseActions.updateExpenses(updatedExpense));
 
@@ -120,13 +122,16 @@ const ExpenseForm = () => {
             "Content-Type": "application/json",
           },
         });
+       
         if (res.ok) {
+
           const data = await res.json();
           newExpense.id = data.name;
 
           console.log(data.name);
 
           dispatch(expenseActions.addExpenses([...expenses, newExpense]));
+          
           console.log("expenses context", expenses);
         } else {
           console.log(res.error);

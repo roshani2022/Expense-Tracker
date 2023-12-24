@@ -75,13 +75,13 @@ const Welcome = () => {
         <div className="d-flex justify-content-end me-3">
           <Button onClick={emailVerificationHandler}>Verify Email</Button>
         </div>
-        <h1>
-          Dayily Expense
+        <h3>
+          Your  Dayily Expense is 
           <Link to="/Expense" style={{ textDecoration: "none" }}>
             {" "}
-            List
+            here
           </Link>
-        </h1>
+        </h3>
       </div>
     </>
   );
