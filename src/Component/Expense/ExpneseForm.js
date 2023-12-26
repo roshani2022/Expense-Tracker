@@ -4,13 +4,20 @@ import { useSelector, useDispatch } from "react-redux";
 import { expenseActions } from "../../store/expense";
 
 const ExpenseForm = () => {
+
+  const email = useSelector((state)=>state.auth.userEmail)
+  const modifiedEmail = email.replace("@","").replace(".","")
+
+
   let url =
-    "https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses.json";
+    `https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses/${modifiedEmail}.json`;
 
   const dispatch = useDispatch();
   const editedExpense = useSelector((state) => state.expenses.editedExpense);
   const expenses = useSelector((state) => state.expenses.expenses);
-
+  
+  
+  
   const [amount, setAmount] = useState(
     editedExpense ? editedExpense.amount : ""
   );
@@ -83,7 +90,7 @@ const ExpenseForm = () => {
 
       try {
         const res = await fetch(
-          `https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses/${updatedExpense.id}.json`,
+          `https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses//${modifiedEmail}/${updatedExpense.id}.json`,
           {
             method: "PUT", // Use PUT method for updating
             body: JSON.stringify(updatedExpense),

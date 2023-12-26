@@ -9,6 +9,9 @@ const ExpenseList = () => {
   const expenses = useSelector((state) => state.expenses.expenses);
   const totalAmount = useSelector((state) => state.expenses.totalAmount);
 
+  const email = useSelector((state)=>state.auth.userEmail)
+  const modifiedEmail = email.replace("@","").replace(".","")
+
   const backgroundColor = useSelector((state) => state.theme.backgroundColor);
 
   document.body.style.backgroundColor = backgroundColor;
@@ -29,7 +32,7 @@ const ExpenseList = () => {
 
     try {
       const res = await fetch(
-        `https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses/${id}.json`,
+        `https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses/${modifiedEmail}/${id}.json`,
         {
           method: "DELETE",
         }
