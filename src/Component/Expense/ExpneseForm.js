@@ -79,7 +79,7 @@ const ExpenseForm = () => {
         category: category,
       };
 
-     
+      dispatch(expenseActions.updateExpenses(updatedExpense));
 
       try {
         const res = await fetch(
@@ -93,27 +93,25 @@ const ExpenseForm = () => {
           }
         );
 
-       
-
         if (res.ok) {
-          dispatch(expenseActions.updateExpenses(updatedExpense));
-
           console.log("Expense updated successfully");
           alert("Expense updated successfully");
         } else {
           throw new Error("Failed to update expense");
         }
-        
       } catch (err) {
         console.log(err);
         alert("Failed to update expense");
       }
     } else {
       let newExpense = {
+        Id: Math.random().toString(),
         amount,
         detail,
         category,
       };
+
+      dispatch(expenseActions.addExpenses([...expenses, newExpense]));
       try {
         const res = await fetch(url, {
           method: "POST",
@@ -122,16 +120,11 @@ const ExpenseForm = () => {
             "Content-Type": "application/json",
           },
         });
-       
-        if (res.ok) {
 
+        if (res.ok) {
           const data = await res.json();
           newExpense.id = data.name;
 
-          console.log(data.name);
-
-          dispatch(expenseActions.addExpenses([...expenses, newExpense]));
-          
           console.log("expenses context", expenses);
         } else {
           console.log(res.error);
@@ -139,7 +132,6 @@ const ExpenseForm = () => {
       } catch (error) {
         console.log(error);
       }
-     
     }
 
     setAmount("");
@@ -191,4 +183,3 @@ const ExpenseForm = () => {
   );
 };
 export default ExpenseForm;
-

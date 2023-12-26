@@ -1,16 +1,10 @@
 import React, { useEffect } from "react";
 import { Button, Card, Table } from "react-bootstrap";
-import {
-  FaDeleteLeft,
-  FaPenToSquare,
-  FaRegWindowRestore,
-} from "react-icons/fa6";
+import { FaDeleteLeft,FaPenToSquare,} from "react-icons/fa6";
 import { useSelector, useDispatch } from "react-redux";
 import { expenseActions } from "../../store/expense";
 
-
 const ExpenseList = () => {
-  
   const dispatch = useDispatch();
   const expenses = useSelector((state) => state.expenses.expenses);
   const totalAmount = useSelector((state) => state.expenses.totalAmount);
@@ -28,7 +22,32 @@ const ExpenseList = () => {
     dispatch(expenseActions.editExpenses(editedExpense));
     console.log(editedExpense);
   };
- 
+
+  const handdeleteButtonClick = async (id) => {
+    dispatch(expenseActions.removeExpenses(id));
+    console.log("Expense deleted successfully");
+
+    try {
+      const res = await fetch(
+        `https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses/${id}.json`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (res.ok) {
+        alert("Expense deleted successfully");
+      } else {
+        throw new Error("Failed to delete expense");
+      }
+    } catch (err) {
+      console.log(err);
+      // Revert the state in case of an error
+
+      alert("Failed to delete expense");
+    }
+  };
+  
   const convertToCSV = (data) => {
     const csvRows = [];
     const headers = ["Detail", "Category", "Amount"];
@@ -62,32 +81,7 @@ const ExpenseList = () => {
     downloadCSV(csvData);
   };
 
-  
-
-  const handdeleteButtonClick = async (id) => {
-    try {
-      const res = await fetch(
-        `https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses/${id}.json`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (res.ok) {
-        console.log("Expense deleted successfully");
-        alert("Expense deleted successfully");
-        dispatch(expenseActions.removeExpenses(id));
-      } else {
-        throw new Error("Failed to delete expense");
-      }
-    } catch (err) {
-      console.log(err);
-      // Revert the state in case of an error
-
-      alert("Failed to delete expense");
-    }
-  };
-
+ 
   const showExpense = (expenses) => {
     return (
       <>
@@ -128,8 +122,6 @@ const ExpenseList = () => {
         className="mt-3 mx-auto"
         style={{ width: "450px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}
       >
-        
-
         {expenses && expenses.length > 0 ? (
           <>
             <Table striped bordered hover responsive>
@@ -142,7 +134,11 @@ const ExpenseList = () => {
               </tfoot>
             </Table>
             <div className="justify-content-end">
-              <Button variant="primary" className="mt-2 mb-2 ms-2"  onClick={downloadHandler}>
+              <Button
+                variant="primary"
+                className="mt-2 mb-2 ms-2"
+                onClick={downloadHandler}
+              >
                 Download Csv File
               </Button>
             </div>
