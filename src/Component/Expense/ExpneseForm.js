@@ -8,11 +8,13 @@ const ExpenseForm = () => {
   const email = useSelector((state)=>state.auth.userEmail)
   const modifiedEmail = email.replace("@","").replace(".","")
 
+  const dispatch = useDispatch()
+
 
   let url =
-    `https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses/${modifiedEmail}.json`;
+  `https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses/${modifiedEmail}.json`;
 
-  const dispatch = useDispatch();
+ 
   const editedExpense = useSelector((state) => state.expenses.editedExpense);
   const expenses = useSelector((state) => state.expenses.expenses);
   
@@ -33,6 +35,10 @@ const ExpenseForm = () => {
     setDetail(editedExpense ? editedExpense.detail : "");
     setCategory(editedExpense ? editedExpense.category : "Food");
   }, [editedExpense]);
+
+  useEffect(()=>{
+     dispatch(expenseActions.setExpenses([]))
+  },[modifiedEmail,dispatch])
 
   useEffect(() => {
     const getData = async () => {
@@ -90,7 +96,7 @@ const ExpenseForm = () => {
 
       try {
         const res = await fetch(
-          `https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses//${modifiedEmail}/${updatedExpense.id}.json`,
+          `https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses/${modifiedEmail}/${updatedExpense.id}.json`,
           {
             method: "PUT", // Use PUT method for updating
             body: JSON.stringify(updatedExpense),
@@ -101,6 +107,7 @@ const ExpenseForm = () => {
         );
 
         if (res.ok) {
+         
           console.log("Expense updated successfully");
           alert("Expense updated successfully");
         } else {
@@ -129,10 +136,9 @@ const ExpenseForm = () => {
         });
 
         if (res.ok) {
-          const data = await res.json();
-          newExpense.id = data.name;
-
-          console.log("expenses context", expenses);
+          
+         console.log("Expense added successfully");
+            alert('"Expense added successfully"')
         } else {
           console.log(res.error);
         }

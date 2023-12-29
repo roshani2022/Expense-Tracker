@@ -8,7 +8,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const login = useSelector((state) => state.auth.isAuthenticated);
   const history = useHistory();
-  console.log(login);
+  
   const emailRef = useRef({ current: "" });
   const passwordRef = useRef({ current: "" });
   const confirmPasswordRef = useRef({ current: "" });
@@ -17,13 +17,18 @@ const Login = () => {
     dispatch(authActions.setLogin());
   };
 
-  const submitHandler = (event) => {
+  const submitHandler = async(event) => {
     event.preventDefault();
 
-    const email = emailRef.current.value;
+    const email = emailRef.current.value; 
     const password = passwordRef.current.value;
     const confirmPassword = confirmPasswordRef.current.value;
 
+    if (password.length < 5) {
+      alert("Password must be at least 5 characters long.");
+      return;
+    }
+        
     let url;
 
     if (!login) {
@@ -33,47 +38,42 @@ const Login = () => {
       url =
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD-KuNBIcej1kXNRbQ4NAShkU3iwVjeguA";
     }
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        email: email,
-        password: password,
-        confirmPassword: confirmPassword,
-        returnSecureToken: true,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          return res.json().then((data) => {
-            let errorMessage;
-            if (data && data.error && data.error.message) {
-              errorMessage = data.error.message;
-            }
-            throw new Error(errorMessage);
-          });
-        }
-      })
-      .then((data) => {
-        if (!login) {
-          console.log("Login successful!");
-        } else {
-          console.log("Signup successful!");
-        }
 
-        dispatch(
-          authActions.login({ idToken: data.idToken, email: data.email })
-        );
-        history.replace("/Welcome");
+    try{
+
+      const res  = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          confirmPassword: confirmPassword,
+          returnSecureToken: true,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       })
-      .catch((err) => {
-        console.error("Error during authentication:", err);
-        alert(err.message);
-      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        let errorMessage = data.error?.message || "Unknown error";
+        throw new Error(errorMessage);
+      }
+      const data = await res.json();
+
+      if (!login) {
+        console.log("Login successful!");
+      } else {
+        console.log("Signup successful!");
+      }
+      dispatch(authActions.login({ idToken: data.idToken, email: data.email }));
+      history.replace("/Welcome");
+    }catch(error){
+      console.log("Error during authentication:", error);
+      alert(error.message);
+    }
+   
+     
 
     emailRef.current.value = "";
     passwordRef.current.value = "";

@@ -1,7 +1,6 @@
 import React,{useState} from "react";
 import ExpenseForm from "./ExpneseForm";
 import ExpenseList from "./ExpenseList";
-import { ExpenseContextProvider } from "../Store/ExpenseContext";
 
 const Expense = () => {
 
@@ -12,10 +11,10 @@ const Expense = () => {
   };
 
   return (
-    <ExpenseContextProvider>
+    <>
       <ExpenseForm />
       <ExpenseList list={showExpenseList} onshow={showExpenseListHandler}  />
-    </ExpenseContextProvider>
+      </>
   );
 };
 export default Expense;
