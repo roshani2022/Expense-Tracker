@@ -8,7 +8,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const login = useSelector((state) => state.auth.isAuthenticated);
   const history = useHistory();
-  
+
   const emailRef = useRef({ current: "" });
   const passwordRef = useRef({ current: "" });
   const confirmPasswordRef = useRef({ current: "" });
@@ -17,10 +17,10 @@ const Login = () => {
     dispatch(authActions.setLogin());
   };
 
-  const submitHandler = async(event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
 
-    const email = emailRef.current.value; 
+    const email = emailRef.current.value;
     const password = passwordRef.current.value;
     const confirmPassword = confirmPasswordRef.current.value;
 
@@ -28,7 +28,7 @@ const Login = () => {
       alert("Password must be at least 5 characters long.");
       return;
     }
-        
+
     let url;
 
     if (!login) {
@@ -39,9 +39,8 @@ const Login = () => {
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD-KuNBIcej1kXNRbQ4NAShkU3iwVjeguA";
     }
 
-    try{
-
-      const res  = await fetch(url, {
+    try {
+      const res = await fetch(url, {
         method: "POST",
         body: JSON.stringify({
           email: email,
@@ -52,7 +51,7 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-      })
+      });
 
       if (!res.ok) {
         const data = await res.json();
@@ -68,12 +67,10 @@ const Login = () => {
       }
       dispatch(authActions.login({ idToken: data.idToken, email: data.email }));
       history.replace("/Welcome");
-    }catch(error){
+    } catch (error) {
       console.log("Error during authentication:", error);
       alert(error.message);
     }
-   
-     
 
     emailRef.current.value = "";
     passwordRef.current.value = "";

@@ -37,9 +37,10 @@ const ExpenseForm = () => {
   }, [editedExpense]);
 
   useEffect(()=>{
-     dispatch(expenseActions.setExpenses([]))
+    dispatch(expenseActions.setExpenses([]))
   },[modifiedEmail,dispatch])
 
+  
   useEffect(() => {
     const getData = async () => {
       try {
@@ -68,7 +69,7 @@ const ExpenseForm = () => {
     };
 
     getData();
-  }, [dispatch]);
+  }, [dispatch,modifiedEmail]);
 
   const amountHandler = (event) => {
     setAmount(event.target.value);
@@ -93,7 +94,7 @@ const ExpenseForm = () => {
       };
 
       dispatch(expenseActions.updateExpenses(updatedExpense));
-
+    
       try {
         const res = await fetch(
           `https://expense-tracker-c2f34-default-rtdb.firebaseio.com/expenses/${modifiedEmail}/${updatedExpense.id}.json`,
