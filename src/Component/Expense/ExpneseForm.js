@@ -6,7 +6,8 @@ import { expenseActions } from "../../store/expense";
 const ExpenseForm = () => {
 
   const email = useSelector((state)=>state.auth.userEmail)
-  const modifiedEmail = email.replace("@","").replace(".","")
+  // const modifiedEmail = email.replace("@","").replace(".","")
+  const modifiedEmail = email ? email.replace("@", "").replace(".", "") : "";
 
   const dispatch = useDispatch()
 

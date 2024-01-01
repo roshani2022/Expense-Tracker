@@ -10,7 +10,8 @@ const ExpenseList = () => {
   const totalAmount = useSelector((state) => state.expenses.totalAmount);
 
   const email = useSelector((state)=>state.auth.userEmail)
-  const modifiedEmail = email.replace("@","").replace(".","")
+  // const modifiedEmail = email.replace("@","").replace(".","")
+  const modifiedEmail = email ? email.replace("@", "").replace(".", "") : "";
 
   const backgroundColor = useSelector((state) => state.theme.backgroundColor);
 
