@@ -35,7 +35,7 @@ const ProfilePage = () => {
       }
     };
     getData();
-  }, [idToken]);
+  }, [idToken,url]);
 
   const profileSubmitHandler = async (event) => {
     event.preventDefault();

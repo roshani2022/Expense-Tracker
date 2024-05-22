@@ -70,7 +70,7 @@ const ExpenseForm = () => {
     };
 
     getData();
-  }, [dispatch,modifiedEmail]);
+  }, [dispatch,modifiedEmail,url]);
 
   const amountHandler = (event) => {
     setAmount(event.target.value);
