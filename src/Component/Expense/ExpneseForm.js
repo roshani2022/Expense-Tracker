@@ -127,6 +127,7 @@ const ExpenseForm = () => {
         category,
       };
 
+      // dispatch(expenseActions.addExpenses([...expenses, newExpense]));
       dispatch(expenseActions.addExpenses([...expenses, newExpense]));
       try {
         const res = await fetch(url, {
